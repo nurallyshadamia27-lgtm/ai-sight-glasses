@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sight - Prototaip Pengesan Halangan Pintar</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts: Inter & Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header>
+            <div class="logo">
+                <span class="logo-icon">👁️</span>
+                <h1>AI Sight <span>v1.0</span></h1>
+            </div>
+            <div id="status-badge" class="badge loading">Memuatkan Model AI...</div>
+        </header>
+
+        <!-- Camera / Vision Area -->
+        <main class="vision-container">
+            <div class="video-wrapper">
+                <video id="webcam" autoplay playsinline muted></video>
+                <canvas id="overlay"></canvas>
+                
+                <!-- Loading Overlay -->
+                <div id="loading-overlay" class="overlay-screen">
+                    <div class="spinner"></div>
+                    <p id="loading-text">Menyediakan Model AI TensorFlow...</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+
+                <!-- Guidance Overlay for Blind Simulation -->
+                <div id="guidance-overlay" class="guidance-indicator hidden">
+                    <span id="guidance-text">AWAS: Ranting di hadapan kanan!</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Control Panel & Dashboard -->
+        <section class="dashboard-controls">
+            <!-- Camera & AI Controls -->
+            <div class="control-card camera-controls">
+                <h3><span class="icon">📷</span> Kawalan Kamera</h3>
+                <div class="button-group">
+                    <button id="btn-toggle-camera" class="btn btn-primary" disabled>
+                        <span class="btn-icon">▶️</span> Mulakan Kamera
+                    </button>
+                    <button id="btn-switch-camera" class="btn btn-secondary" disabled>
+                        <span class="btn-icon">🔄</span> Tukar Kamera (Belakang)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Audio & Speech Controls -->
+            <div class="control-card audio-controls">
+                <h3><span class="icon">🔊</span> Amaran Suara (Speaker)</h3>
+                <div class="settings-row">
+                    <label class="switch-container">
+                        <input type="checkbox" id="chk-audio" checked>
+                        <span class="slider round"></span>
+                        <span class="label-text">Bunyi Amaran (TTS)</span>
+                    </label>
+                </div>
+                <div class="settings-row range-setting">
+                    <label for="range-rate">Kelajuan Suara:</label>
+                    <input type="range" id="range-rate" min="0.5" max="2.0" step="0.1" value="1.2">
+                    <span id="rate-value">1.2x</span>
+                </div>
+            </div>
+
+            <!-- Real-Time Metrics & Logs -->
+            <div class="control-card stats-card">
+                <h3><span class="icon">📊</span> Metrik Masa Nyata</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">FPS Pemprosesan</span>
+                        <span id="stat-fps" class="stat-value">0.0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Objek Dikesan</span>
+                        <span id="stat-count" class="stat-value">0</span>
+                    </div>
+                </div>
+                <div class="logs-container">
+                    <h4>Log Amaran:</h4>
+                    <div id="logs-list" class="logs-list">
+                        <div class="log-entry system">Sistem sedia untuk dimulakan.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Info -->
+        <footer>
+            <p>Prototaip Cermin Mata Pintar untuk Orang Buta &bull; Dikuasakan oleh TensorFlow.js & COCO-SSD</p>
+        </footer>
+    </div>
+
+    <!-- TensorFlow.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+    <!-- COCO-SSD Model CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+    <!-- Application Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
