@@ -19,6 +19,8 @@ const guidanceOverlay = document.getElementById('guidance-overlay');
 const guidanceText = document.getElementById('guidance-text');
 const permissionModal = document.getElementById('permission-modal');
 const btnGrantPermission = document.getElementById('btn-grant-permission');
+const btnClosePermission = document.getElementById('btn-close-permission');
+const btnSkipPermission = document.getElementById('btn-skip-permission');
 
 // Web Audio Context for Spatial Beeps
 let audioCtx = null;
@@ -104,6 +106,18 @@ rangeRate.addEventListener('input', (e) => {
 btnGrantPermission.addEventListener('click', async () => {
     permissionModal.classList.add('hidden');
     await startCamera();
+});
+
+// Button: Close Permission Modal Click
+btnClosePermission.addEventListener('click', () => {
+    permissionModal.classList.add('hidden');
+    addLog("Camera access modal closed by user.", "warning");
+});
+
+// Button: Skip Permission Modal Click
+btnSkipPermission.addEventListener('click', () => {
+    permissionModal.classList.add('hidden');
+    addLog("Camera access skipped by user.", "warning");
 });
 
 // Button: Toggle Camera (Start/Stop)

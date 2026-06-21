@@ -13,13 +13,19 @@
 <body>
     <!-- Custom Permission Modal -->
     <div id="permission-modal" class="overlay-screen hidden" style="position: fixed; z-index: 9999;">
-        <div class="permission-card">
+        <div class="permission-card" style="position: relative;">
+            <button id="btn-close-permission" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; transition: color 0.2s;">&times;</button>
             <span class="permission-icon">📸</span>
             <h2>Camera Access Required</h2>
             <p>AI Sight requires access to your camera to scan and identify obstacles in real-time.</p>
-            <button id="btn-grant-permission" class="btn btn-primary" style="margin-top: 1rem; width: auto; padding: 0.85rem 2rem;">
-                <span>🔓</span> Allow Camera
-            </button>
+            <div style="display: flex; gap: 1rem; width: 100%; justify-content: center; margin-top: 1rem;">
+                <button id="btn-grant-permission" class="btn btn-primary" style="width: auto; padding: 0.85rem 2rem;">
+                    <span>🔓</span> Allow Camera
+                </button>
+                <button id="btn-skip-permission" class="btn btn-secondary" style="width: auto; padding: 0.85rem 2rem;">
+                    Skip
+                </button>
+            </div>
         </div>
     </div>
 
