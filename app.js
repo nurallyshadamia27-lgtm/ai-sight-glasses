@@ -127,6 +127,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         // Enable Controls
         btnToggleCamera.disabled = false;
         btnSwitchCamera.disabled = false;
+
+        // Auto-request camera permission
+        addLog("Meminta akses kamera secara automatik...", "system");
+        startCamera();
     } catch (error) {
         console.error("Failed to load model:", error);
         loadingText.innerText = "Ralat memuatkan model. Sila muat semula halaman.";
