@@ -17,10 +17,7 @@ const statCount = document.getElementById('stat-count');
 const logsList = document.getElementById('logs-list');
 const guidanceOverlay = document.getElementById('guidance-overlay');
 const guidanceText = document.getElementById('guidance-text');
-const permissionModal = document.getElementById('permission-modal');
-const btnGrantPermission = document.getElementById('btn-grant-permission');
-const btnClosePermission = document.getElementById('btn-close-permission');
-const btnSkipPermission = document.getElementById('btn-skip-permission');
+
 
 // Web Audio Context for Spatial Beeps
 let audioCtx = null;
@@ -70,25 +67,9 @@ window.addEventListener('DOMContentLoaded', async () => {
         btnToggleCamera.disabled = false;
         btnSwitchCamera.disabled = false;
 
-        // Check for camera permission status first
-        let showModal = true;
-        if (navigator.permissions && navigator.permissions.query) {
-            try {
-                const permissionStatus = await navigator.permissions.query({ name: 'camera' });
-                if (permissionStatus.state === 'granted') {
-                    showModal = false;
-                    addLog("Camera permission already granted. Starting camera...", "system");
-                    startCamera();
-                }
-            } catch (e) {
-                console.warn("Permissions API query failed:", e);
-            }
-        }
-        
-        if (showModal) {
-            permissionModal.classList.remove('hidden');
-            addLog("Camera permission required. Showing prompt...", "system");
-        }
+        // Auto-start camera
+        addLog("Starting camera automatically...", "system");
+        startCamera();
     } catch (error) {
         console.error("Failed to load model:", error);
         loadingText.innerText = "Error loading model. Please reload the page.";
@@ -108,17 +89,6 @@ btnGrantPermission.addEventListener('click', async () => {
     await startCamera();
 });
 
-// Button: Close Permission Modal Click
-btnClosePermission.addEventListener('click', () => {
-    permissionModal.classList.add('hidden');
-    addLog("Camera access modal closed by user.", "warning");
-});
-
-// Button: Skip Permission Modal Click
-btnSkipPermission.addEventListener('click', () => {
-    permissionModal.classList.add('hidden');
-    addLog("Camera access skipped by user.", "warning");
-});
 
 // Button: Toggle Camera (Start/Stop)
 btnToggleCamera.addEventListener('click', () => {
@@ -184,9 +154,6 @@ async function startCamera() {
             statusBadge.innerText = "Active (AI)";
             statusBadge.className = "badge active";
             
-            // Hide the permission modal since stream started successfully
-            permissionModal.classList.add('hidden');
-            
             addLog("Camera activated. Starting AI scan...", "ready");
             
             // Start real-time detection loop
@@ -201,15 +168,6 @@ async function startCamera() {
             : `Failed to open camera: ${err.message || "Please ensure permissions are granted."}`;
             
         addLog(errorMsg, "alert");
-        
-        // Show error message on the modal card
-        const pElement = permissionModal.querySelector('p');
-        if (pElement) {
-            pElement.innerHTML = `<span style="color: var(--color-rose); font-weight: bold; display: block; margin-bottom: 0.5rem;">⚠️ ${errorMsg}</span>
-                                  Please run this app on <b>localhost</b> or deploy it to <b>Vercel (HTTPS)</b> to allow camera access.`;
-        }
-        
-        permissionModal.classList.remove('hidden');
     }
 }
 

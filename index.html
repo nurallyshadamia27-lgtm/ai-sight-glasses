@@ -11,23 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Custom Permission Modal -->
-    <div id="permission-modal" class="overlay-screen hidden" style="position: fixed; z-index: 9999;">
-        <div class="permission-card" style="position: relative;">
-            <button id="btn-close-permission" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; transition: color 0.2s;">&times;</button>
-            <span class="permission-icon">📸</span>
-            <h2>Camera Access Required</h2>
-            <p>AI Sight requires access to your camera to scan and identify obstacles in real-time.</p>
-            <div style="display: flex; gap: 1rem; width: 100%; justify-content: center; margin-top: 1rem;">
-                <button id="btn-grant-permission" class="btn btn-primary" style="width: auto; padding: 0.85rem 2rem;">
-                    <span>🔓</span> Allow Camera
-                </button>
-                <button id="btn-skip-permission" class="btn btn-secondary" style="width: auto; padding: 0.85rem 2rem;">
-                    Skip
-                </button>
-            </div>
-        </div>
-    </div>
 
     <div class="app-container">
         <!-- Header Section -->
