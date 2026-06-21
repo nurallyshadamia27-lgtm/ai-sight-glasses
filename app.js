@@ -17,6 +17,8 @@ const statCount = document.getElementById('stat-count');
 const logsList = document.getElementById('logs-list');
 const guidanceOverlay = document.getElementById('guidance-overlay');
 const guidanceText = document.getElementById('guidance-text');
+const permissionModal = document.getElementById('permission-modal');
+const btnGrantPermission = document.getElementById('btn-grant-permission');
 
 // Web Audio Context for Spatial Beeps
 let audioCtx = null;
@@ -66,9 +68,25 @@ window.addEventListener('DOMContentLoaded', async () => {
         btnToggleCamera.disabled = false;
         btnSwitchCamera.disabled = false;
 
-        // Auto-request camera permission
-        addLog("Auto-requesting camera access...", "system");
-        startCamera();
+        // Check for camera permission status first
+        let showModal = true;
+        if (navigator.permissions && navigator.permissions.query) {
+            try {
+                const permissionStatus = await navigator.permissions.query({ name: 'camera' });
+                if (permissionStatus.state === 'granted') {
+                    showModal = false;
+                    addLog("Camera permission already granted. Starting camera...", "system");
+                    startCamera();
+                }
+            } catch (e) {
+                console.warn("Permissions API query failed:", e);
+            }
+        }
+        
+        if (showModal) {
+            permissionModal.classList.remove('hidden');
+            addLog("Camera permission required. Showing prompt...", "system");
+        }
     } catch (error) {
         console.error("Failed to load model:", error);
         loadingText.innerText = "Error loading model. Please reload the page.";
@@ -80,6 +98,12 @@ window.addEventListener('DOMContentLoaded', async () => {
 // Sound Settings Input Listeners
 rangeRate.addEventListener('input', (e) => {
     rateValue.innerText = `${e.target.value}x`;
+});
+
+// Button: Grant Permission Modal Click
+btnGrantPermission.addEventListener('click', async () => {
+    permissionModal.classList.add('hidden');
+    await startCamera();
 });
 
 // Button: Toggle Camera (Start/Stop)
@@ -143,6 +167,7 @@ async function startCamera() {
     } catch (err) {
         console.error("Camera access error:", err);
         addLog("Failed to open camera. Please ensure camera permissions are granted.", "alert");
+        permissionModal.classList.remove('hidden');
     }
 }
 

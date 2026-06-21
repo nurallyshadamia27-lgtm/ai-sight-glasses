@@ -569,3 +569,40 @@ footer {
     from { color: #f43f5e; }
     to { color: #fda4af; }
 }
+
+/* Permission Modal Card styling */
+.permission-card {
+    background: rgba(18, 24, 38, 0.9);
+    border: 1px solid var(--card-border);
+    padding: 2.5rem;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.permission-icon {
+    font-size: 3.5rem;
+    filter: drop-shadow(0 0 12px var(--color-cyan));
+    margin-bottom: 0.5rem;
+}
+
+.permission-card h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+.permission-card p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
