@@ -131,6 +131,10 @@ btnSwitchCamera.addEventListener('click', () => {
 // Start Camera Stream
 async function startCamera() {
     try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error("Camera API is blocked/not supported. You must run this website on HTTPS or localhost to use the camera.");
+        }
+
         let constraints = {
             video: {
                 facingMode: facingMode,
@@ -177,7 +181,20 @@ async function startCamera() {
         
     } catch (err) {
         console.error("Camera access error:", err);
-        addLog("Failed to open camera. Please ensure camera permissions are granted.", "alert");
+        const isSecureError = !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia;
+        const errorMsg = isSecureError
+            ? "Camera access requires HTTPS or Localhost. Cannot run via local file (file://)."
+            : `Failed to open camera: ${err.message || "Please ensure permissions are granted."}`;
+            
+        addLog(errorMsg, "alert");
+        
+        // Show error message on the modal card
+        const pElement = permissionModal.querySelector('p');
+        if (pElement) {
+            pElement.innerHTML = `<span style="color: var(--color-rose); font-weight: bold; display: block; margin-bottom: 0.5rem;">⚠️ ${errorMsg}</span>
+                                  Please run this app on <b>localhost</b> or deploy it to <b>Vercel (HTTPS)</b> to allow camera access.`;
+        }
+        
         permissionModal.classList.remove('hidden');
     }
 }
