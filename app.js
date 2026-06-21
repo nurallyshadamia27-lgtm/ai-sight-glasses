@@ -131,7 +131,7 @@ btnSwitchCamera.addEventListener('click', () => {
 // Start Camera Stream
 async function startCamera() {
     try {
-        const constraints = {
+        let constraints = {
             video: {
                 facingMode: facingMode,
                 width: { ideal: 640 },
@@ -140,7 +140,15 @@ async function startCamera() {
             audio: false
         };
         
-        webcamStream = await navigator.mediaDevices.getUserMedia(constraints);
+        try {
+            webcamStream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (initialErr) {
+            console.warn("Initial camera constraints failed, trying fallback...", initialErr);
+            // Fallback: request any available camera
+            constraints = { video: true, audio: false };
+            webcamStream = await navigator.mediaDevices.getUserMedia(constraints);
+        }
+        
         webcamElement.srcObject = webcamStream;
         
         // Start playing the video
@@ -157,6 +165,9 @@ async function startCamera() {
             
             statusBadge.innerText = "Active (AI)";
             statusBadge.className = "badge active";
+            
+            // Hide the permission modal since stream started successfully
+            permissionModal.classList.add('hidden');
             
             addLog("Camera activated. Starting AI scan...", "ready");
             
