@@ -38,104 +38,42 @@ let lastFrameTime = performance.now();
 let frameCount = 0;
 let fps = 0.0;
 
-// Mapping COCO classes to Malay translations for accessibility speech
-const classTranslations = {
-    "person": "orang",
-    "bicycle": "basikal",
-    "car": "kereta",
-    "motorcycle": "motosikal",
-    "bus": "bas",
-    "train": "keretapi",
-    "truck": "lori",
-    "traffic light": "lampu isyarat",
-    "fire hydrant": "pili bomba",
-    "stop sign": "papan tanda berhenti",
-    "bench": "bangku",
-    "cat": "kucing",
-    "dog": "anjing",
-    "backpack": "beg galas",
-    "umbrella": "payung",
-    "handbag": "beg tangan",
-    "tie": "tali leher",
-    "suitcase": "bagasi",
-    "bottle": "botol",
-    "wine glass": "gelas",
-    "cup": "cawan",
-    "fork": "garpu",
-    "knife": "pisau",
-    "spoon": "sudu",
-    "bowl": "mangkuk",
-    "banana": "pisang",
-    "apple": "epal",
-    "sandwich": "sandwic",
-    "orange": "oren",
-    "broccoli": "brokoli",
-    "carrot": "lobak",
-    "hot dog": "sosej",
-    "pizza": "piza",
-    "donut": "donat",
-    "chair": "kerusi",
-    "couch": "sofa",
-    "potted plant": "pasu bunga",
-    "bed": "katil",
-    "dining table": "meja makan",
-    "toilet": "tandas",
-    "tv": "televisyen",
-    "laptop": "komputer riba",
-    "mouse": "tetikus",
-    "remote": "alat kawalan jauh",
-    "keyboard": "papan kekunci",
-    "cell phone": "telefon bimbit",
-    "microwave": "ketuhar",
-    "oven": "ketuhar",
-    "toaster": "pembakar roti",
-    "sink": "singki",
-    "refrigerator": "peti sejuk",
-    "book": "buku",
-    "clock": "jam",
-    "vase": "pasu",
-    "scissors": "gunting",
-    "teddy bear": "beruang mainan",
-    "hair drier": "pengering rambut",
-    "toothbrush": "berus gigi"
-};
-
 // Initialize App
 window.addEventListener('DOMContentLoaded', async () => {
-    addLog("Memulakan sistem AI...", "system");
+    addLog("Initializing AI system...", "system");
     
     // Check if browser supports Web Speech API
     if (!('speechSynthesis' in window)) {
-        addLog("Amaran: Browser anda tidak menyokong Text-to-Speech.", "warning");
+        addLog("Warning: Your browser does not support Text-to-Speech.", "warning");
         chkAudio.checked = false;
         chkAudio.disabled = true;
     }
 
     // Load TensorFlow COCO-SSD Model
     try {
-        loadingText.innerText = "Memuat turun Model AI Lite...";
+        loadingText.innerText = "Downloading Lite AI Model...";
         // Use 'lite_mobilenet_v2' for faster loading and execution on mobile browsers
         model = await cocoSsd.load({ base: 'lite_mobilenet_v2' });
         
         loadingOverlay.style.opacity = '0';
         setTimeout(() => loadingOverlay.style.display = 'none', 500);
         
-        statusBadge.innerText = "Sedia";
+        statusBadge.innerText = "Ready";
         statusBadge.className = "badge ready";
-        addLog("Model AI berjaya dimuatkan (Lite MobileNet V2).", "ready");
+        addLog("AI Model successfully loaded (Lite MobileNet V2).", "ready");
         
         // Enable Controls
         btnToggleCamera.disabled = false;
         btnSwitchCamera.disabled = false;
 
         // Auto-request camera permission
-        addLog("Meminta akses kamera secara automatik...", "system");
+        addLog("Auto-requesting camera access...", "system");
         startCamera();
     } catch (error) {
         console.error("Failed to load model:", error);
-        loadingText.innerText = "Ralat memuatkan model. Sila muat semula halaman.";
+        loadingText.innerText = "Error loading model. Please reload the page.";
         loadingText.style.color = "var(--color-rose)";
-        addLog("Ralat kritikal: Gagal memuat turun model AI.", "alert");
+        addLog("Critical error: Failed to download AI model.", "alert");
     }
 });
 
@@ -156,9 +94,9 @@ btnToggleCamera.addEventListener('click', () => {
 // Button: Switch Camera (Front/Back)
 btnSwitchCamera.addEventListener('click', () => {
     facingMode = facingMode === "user" ? "environment" : "user";
-    const modeText = facingMode === "user" ? "Depan" : "Belakang";
-    addLog(`Menukar kamera ke kamera ${modeText}.`, "system");
-    btnSwitchCamera.innerHTML = `<span>🔄</span> Kamera: ${modeText}`;
+    const modeText = facingMode === "user" ? "Front" : "Back";
+    addLog(`Switching camera to ${modeText} camera.`, "system");
+    btnSwitchCamera.innerHTML = `<span>🔄</span> Camera: ${modeText}`;
     
     if (isStreaming) {
         stopCamera();
@@ -190,13 +128,13 @@ async function startCamera() {
             canvasElement.height = webcamElement.videoHeight;
             
             isStreaming = true;
-            btnToggleCamera.innerHTML = "<span>⏹️</span> Hentikan Kamera";
+            btnToggleCamera.innerHTML = "<span>⏹️</span> Stop Camera";
             btnToggleCamera.className = "btn btn-primary recording";
             
-            statusBadge.innerText = "Aktif (AI)";
+            statusBadge.innerText = "Active (AI)";
             statusBadge.className = "badge active";
             
-            addLog("Kamera diaktifkan. Memulakan imbasan AI...", "ready");
+            addLog("Camera activated. Starting AI scan...", "ready");
             
             // Start real-time detection loop
             detectionLoopId = requestAnimationFrame(detectFrame);
@@ -204,7 +142,7 @@ async function startCamera() {
         
     } catch (err) {
         console.error("Camera access error:", err);
-        addLog("Gagal membuka kamera. Pastikan izin kamera dibenarkan.", "alert");
+        addLog("Failed to open camera. Please ensure camera permissions are granted.", "alert");
     }
 }
 
@@ -221,10 +159,10 @@ function stopCamera() {
     }
     
     isStreaming = false;
-    btnToggleCamera.innerHTML = "<span>▶️</span> Mulakan Kamera";
+    btnToggleCamera.innerHTML = "<span>▶️</span> Start Camera";
     btnToggleCamera.className = "btn btn-primary";
     
-    statusBadge.innerText = "Sedia";
+    statusBadge.innerText = "Ready";
     statusBadge.className = "badge ready";
     
     ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -232,7 +170,7 @@ function stopCamera() {
     statFps.innerText = "0.0";
     statCount.innerText = "0";
     
-    addLog("Kamera dimatikan.", "system");
+    addLog("Camera stopped.", "system");
 }
 
 // Core Detection Loop
@@ -265,7 +203,6 @@ async function detectFrame() {
                 detectedCount++;
                 const [x, y, width, height] = prediction.bbox;
                 const className = prediction.class;
-                const malayName = classTranslations[className] || className;
                 const confidence = Math.round(prediction.score * 100);
                 
                 // Draw Glowing Bounding Box
@@ -281,7 +218,7 @@ async function detectFrame() {
                 // Draw Bounding Box Label
                 ctx.fillStyle = "rgba(6, 182, 212, 0.85)";
                 ctx.font = "bold 14px 'Space Grotesk', sans-serif";
-                const labelText = `${malayName.toUpperCase()} (${confidence}%)`;
+                const labelText = `${className.toUpperCase()} (${confidence}%)`;
                 const textWidth = ctx.measureText(labelText).width;
                 
                 ctx.fillRect(x, y > 25 ? y - 25 : y, textWidth + 14, 25);
@@ -291,14 +228,14 @@ async function detectFrame() {
                 // Determine Object Direction (Spatial Mapping)
                 const centerX = x + width / 2;
                 const frameWidth = canvasElement.width;
-                let direction = "tengah";
+                let direction = "center";
                 let panValue = 0.0; // 3D Audio pan value (-1 left, +1 right)
                 
                 if (centerX < frameWidth * 0.4) {
-                    direction = "kiri";
+                    direction = "left";
                     panValue = -0.8;
                 } else if (centerX > frameWidth * 0.6) {
-                    direction = "kanan";
+                    direction = "right";
                     panValue = 0.8;
                 }
                 
@@ -308,7 +245,7 @@ async function detectFrame() {
                 const isClose = boxArea > 0.08; // threshold for "dangerous/close" objects
                 
                 const objectData = {
-                    name: malayName,
+                    name: className,
                     direction: direction,
                     pan: panValue,
                     isClose: isClose,
@@ -319,7 +256,7 @@ async function detectFrame() {
                 if (isClose && (!highestRiskObject || boxArea > (highestRiskObject.width * highestRiskObject.height))) {
                     highestRiskObject = prediction;
                     highestRiskObject.meta = objectData;
-                } else if (!highestRiskObject && (malayName === "orang" || malayName === "kereta" || malayName === "motosikal")) {
+                } else if (!highestRiskObject && (className === "person" || className === "car" || className === "motorcycle")) {
                     highestRiskObject = prediction;
                     highestRiskObject.meta = objectData;
                 }
@@ -335,7 +272,7 @@ async function detectFrame() {
             // Show red warnings on screen if object is close
             if (meta.isClose) {
                 guidanceOverlay.classList.remove('hidden');
-                guidanceText.innerText = `AWAS: ${meta.name.toUpperCase()} di hadapan ${meta.direction}!`;
+                guidanceText.innerText = `WARNING: ${meta.name.toUpperCase()} directly ahead on the ${meta.direction}!`;
             } else {
                 guidanceOverlay.classList.add('hidden');
             }
@@ -371,28 +308,28 @@ function triggerAudioWarning(obj) {
         // 1. Play Spatial Stereo Beep
         playSpatialBeep(obj.pan, obj.isClose);
         
-        // 2. Log event in Malay
-        const dangerPrefix = obj.isClose ? "BAHAYA: " : "Dikesan: ";
+        // 2. Log event in English
+        const dangerPrefix = obj.isClose ? "DANGER: " : "Detected: ";
         const logType = obj.isClose ? "alert" : "warning";
-        addLog(`${dangerPrefix}${obj.name} di sebelah ${obj.direction}.`, logType);
+        addLog(`${dangerPrefix}${obj.name} on the ${obj.direction}.`, logType);
         
         // 3. Web Speech API (Text-to-Speech)
         let warningText = "";
         if (obj.isClose) {
-            warningText = `Awas, ada ${obj.name} di ${obj.direction}!`;
+            warningText = `Warning, ${obj.name} close on your ${obj.direction}!`;
         } else {
-            warningText = `Ada ${obj.name} di ${obj.direction}.`;
+            warningText = `${obj.name} on your ${obj.direction}.`;
         }
         
         const utterance = new SpeechSynthesisUtterance(warningText);
-        utterance.lang = 'ms-MY'; // Set language to Malay
+        utterance.lang = 'en-US'; // Set language to English
         utterance.rate = parseFloat(rangeRate.value); // voice speed
         
-        // Find a Malay voice if available
+        // Find an English voice if available
         const voices = window.speechSynthesis.getVoices();
-        const msMYVoice = voices.find(voice => voice.lang.includes('ms') || voice.lang.includes('id'));
-        if (msMYVoice) {
-            utterance.voice = msMYVoice;
+        const enVoice = voices.find(voice => voice.lang.includes('en'));
+        if (enVoice) {
+            utterance.voice = enVoice;
         }
         
         window.speechSynthesis.speak(utterance);
@@ -464,7 +401,7 @@ function playSpatialBeep(panValue, isHighRisk) {
 
 // Helper: Add log entry to UI panel
 function addLog(message, type = "info") {
-    const time = new Date().toLocaleTimeString('ms-MY', { hour12: false });
+    const time = new Date().toLocaleTimeString('en-US', { hour12: false });
     const logElement = document.createElement('div');
     logElement.className = `log-entry ${type}`;
     logElement.innerHTML = `[${time}] ${message}`;
